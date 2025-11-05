@@ -338,7 +338,15 @@ extension String {
             return
         }
         #endif
-        self = String(data: pathData, encoding: encoding) ?? ""
+        self = String(data: pathData, encoding: encoding) ?? Self.converted(from: pathData) ?? ""
+    }
+
+    /// Attempt to build a string from the data using the detected encoding.
+    private static func converted(from data: Data) -> String? {
+        var convertedString: NSString?
+        NSString.stringEncoding(for: data, convertedString: &convertedString, usedLossyConversion: nil)
+
+        return convertedString as? String
     }
 
     #if os(Linux)
